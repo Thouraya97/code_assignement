@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:code_assignement/Controller/NetworkHandler.dart';
+import 'package:code_assignement/View/Widgets/petTile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 
@@ -20,23 +22,12 @@ class Pets extends StatefulWidget {
 class _PetsState extends State<Pets> {
   NetworkHandler networkHandler = NetworkHandler();
   List<Pet> petList = <Pet>[];
-  List colors = [
-    Color(0xffffdbc6),
-    Color(0xffe2f2c4),
-    Color(0xffdfecf7),
-    Color(0xfff4dce0),
-  ];
-  String? titre;
-  Random random = new Random();
-  Color randomGenerator() {
-    return colors[new Random().nextInt(1)];
-  }
+
+  List<dynamic> listp = [];
+
+  Pet petsl = Pet();
 
   int index = 0;
-
-  void changeIndex() {
-    setState(() => index = random.nextInt(3));
-  }
 
   @override
   void initState() {
@@ -46,31 +37,36 @@ class _PetsState extends State<Pets> {
     getPets();
   }
 
-  /*void fetchData() async {
-    var response = await networkHandler.get(widget.url!);
-  }*/
-  String baseurl = "http://petstore.swagger.io/#/pet";
-  Future getPets() async {
+  void getPets() async {
     Map<String, String> queryParams = {
       'status': widget.title!,
     };
     String queryString = Uri(queryParameters: queryParams).query;
-    var requestUrl = baseurl + widget.url! + '?' + queryString; // result -
+    var requestUrl = widget.url! + '?' + queryString;
 
-    var response = await networkHandler.getdata(requestUrl);
-    print('Body: ${response.body}');
-    print('Headers: ${response.headers}');
-
-    print('Status code: ${response.statusCode}');
-
-    //  print(response.body);
-    /*var jsonResponse = json.decode(response);
-    Pet pet = Pet.fromJson(jsonResponse);
-    print(pet.petId);*/
+    networkHandler.getdata(requestUrl).then((response) {
+      setState(() {
+        Iterable list = json.decode(response.body);
+        print(response.body);
+        petList = list.map((model) => Pet.fromJson(model)).toList();
+        print(petList.length);
+        print(petList[0].status);
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return GridView.builder(
+        gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        itemCount: petList.length,
+        itemBuilder: (BuildContext ctx, index) {
+          return pTile(
+            id: petList[index].petId.toString(),
+            name: petList[index].petName,
+            //assetName: petList[index].photoUrls![0].toString(),
+          );
+        });
   }
 }

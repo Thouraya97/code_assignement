@@ -45,26 +45,22 @@ class _PetsStatusState extends State<PetsStatus> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title!),
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {},
-            color: Colors.grey,
-            tooltip: 'Menu',
-          ),
+      appBar: AppBar(
+        title: Text(widget.title!),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {},
+          color: Colors.grey,
+          tooltip: 'Menu',
         ),
-        body: Column(
-          children: [
-            Text(widget.title!),
-            Pets(
-              margin: const EdgeInsets.only(top: 30.0),
-              url: "/findByStatus/",
-              title: widget.title,
-            ),
-          ],
-        ));
+      ),
+      body: Pets(
+        margin: const EdgeInsets.only(top: 30.0),
+        url: "/pet/findByStatus",
+        title: widget.title,
+      ),
+    );
   }
 }
